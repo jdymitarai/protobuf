@@ -1542,6 +1542,17 @@ TEST(LiteTest, DownCastMessageLiteToFullFails) {
                      absl::StrCat("Cannot downcast ", test_type_1.GetTypeName(),
                                   " to Message"));
 }
+
+TEST(LiteTest, ParseFromArrayNegativeSizeAborts) {
+  proto2_unittest::TestAllTypesLite msg;
+  const char data[] = "test";
+  EXPECT_DEBUG_DEATH(
+      (void)msg.ParseFromArray(data, -1),
+      "Value \\(-1\\) must be greater than or equal to limit \\(0\\)|value >= limit");
+  EXPECT_DEBUG_DEATH(
+      (void)msg.ParsePartialFromArray(data, -1),
+      "Value \\(-1\\) must be greater than or equal to limit \\(0\\)|value >= limit");
+}
 #endif  // GTEST_HAS_DEATH_TEST
 
 TEST(LiteTest, FileWithOnlyAnEnumGeneratesProperValidationHooks) {

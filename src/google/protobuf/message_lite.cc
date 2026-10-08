@@ -41,6 +41,7 @@
 #include "google/protobuf/metadata_lite.h"
 #include "google/protobuf/parse_context.h"
 #include "google/protobuf/port.h"
+#include "google/protobuf/repeated_ptr_field.h"
 #include "google/protobuf/type_id.h"
 #include "google/protobuf/unknown_field_set.h"
 
@@ -172,6 +173,7 @@ std::string InitializationErrorMessage(absl::string_view action,
 }
 
 inline absl::string_view as_string_view(const void* data, int size) {
+  internal::RuntimeAssertInBoundsGE(size, 0);
   return absl::string_view(static_cast<const char*>(data), size);
 }
 
@@ -401,21 +403,25 @@ bool MessageLite::ParsePartialFromIstream(std::istream* input) {
 
 bool MessageLite::MergePartialFromBoundedZeroCopyStream(
     io::ZeroCopyInputStream* input, int size) {
+  internal::RuntimeAssertInBoundsGE(size, 0);
   return ParseFrom<kMergePartial>(internal::BoundedZCIS{input, size});
 }
 
 bool MessageLite::MergeFromBoundedZeroCopyStream(io::ZeroCopyInputStream* input,
                                                  int size) {
+  internal::RuntimeAssertInBoundsGE(size, 0);
   return ParseFrom<kMerge>(internal::BoundedZCIS{input, size});
 }
 
 bool MessageLite::ParseFromBoundedZeroCopyStream(io::ZeroCopyInputStream* input,
                                                  int size) {
+  internal::RuntimeAssertInBoundsGE(size, 0);
   return ParseFrom<kParse>(internal::BoundedZCIS{input, size});
 }
 
 bool MessageLite::ParsePartialFromBoundedZeroCopyStream(
     io::ZeroCopyInputStream* input, int size) {
+  internal::RuntimeAssertInBoundsGE(size, 0);
   return ParseFrom<kParsePartial>(internal::BoundedZCIS{input, size});
 }
 
